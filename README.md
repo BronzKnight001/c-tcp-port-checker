@@ -1,3 +1,5 @@
+C Systems Utility: Lightweight TCP Port Checker
+
 C Systems Utility is a Windows C system utility that checks TCP ports by making low‑level socket connections. C Systems Utility uses C and the Windows Sockets (Winsock2) API. Shows basic systems programming ideas such as interacting with the OS kernel handling sockets and verifying network handshakes. I find C Systems Utility handy for checks.
 
 Core Capabilities
@@ -73,4 +75,3 @@ Address Structure Configuration (sockaddr_in): Converts target IP strings and in
 TCP Connection Attempt (connect): Triggers the operating system kernel to initiate a three‑way TCP handshake with the target host. I see the handshake happen quickly with C Systems Utility.
 
 Resource Cleanup (closesocket / WSACleanup): Formally closes socket handles. Releases network resources upon completion. I am glad C Systems Utility cleans up properly.
-
