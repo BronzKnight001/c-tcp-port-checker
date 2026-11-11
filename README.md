@@ -1,77 +1,101 @@
-C Systems Utility: Lightweight TCP Port Checker
+TCP Port Checker & Network Scanner
 
-C Systems Utility is a Windows C system utility that checks TCP ports by making low‑level socket connections. C Systems Utility uses C and the Windows Sockets (Winsock2) API. Shows basic systems programming ideas such as interacting with the OS kernel handling sockets and verifying network handshakes. I find C Systems Utility handy for checks.
+A high-performance, lightweight Python utility designed to scan, diagnose, and audit network ports. This tool helps network administrators and security professionals quickly identify open TCP ports, test service availability, and detect host reachability.
 
-Core Capabilities
+Key Features
 
-Native Windows Networking Interface: C Systems Utility uses the Windows Sockets library (Ws2_32.lib) to talk to the operating system network stack. I appreciate the use of Ws2_32.lib.
+Multi-Port Scanning: Supports single ports, comma-separated lists, and continuous port ranges (e.g., 80, 80,443,8080, or 1-1024).
 
-Low-Overhead Execution: C Systems Utility is compiled into one fast binary with GCC (UCRT64). I like the overhead of C Systems Utility.
+Custom Timeout Handling: Prevents network hangs by allowing customizable connection timeout thresholds.
 
-Handshake Verification: C Systems Utility checks a port by trying to open a TCP socket. I trust C Systems Utility to detect ports.
+Service Identification: Automatically maps standard open ports to common services (HTTP, HTTPS, SSH, FTP, RDP, DNS, etc.).
 
-Output: C Systems Utility gives live feedback that shows whether a target port is OPEN or CLOSED (filtered). I find the output clear and helpful.
+Zero External Dependencies: Built entirely using Python's standard socket and argparse libraries for maximum portability across Windows, Linux, and macOS.
 
-Project Structure
+Clean Terminal Output: Formatted CLI tables showing immediate status (OPEN, CLOSED, or TIMED OUT / FILTERED).
 
-c-system-utility/
+Technical Architecture
 
-├── port_checker.c    # C source code using Winsock API
+The utility uses non-blocking TCP socket streams via socket.socket(socket.AF_INET, socket.SOCK_STREAM) to initiate a standard 3-way handshake (SYN -> SYN-ACK -> ACK).
 
-├── port_checker.exe  # native binary
+OPEN: The remote target accepted the TCP connection (SYN-ACK received).
 
-└── README.md         # Project documentation
+CLOSED: The target explicitly refused the connection (RST packet returned).
 
-Compilation and Build Instructions
+FILTERED / TIMED OUT: No response was received within the specified timeout, indicating firewall rules or dropped packets.
 
 Prerequisites
 
-MSYS2 / GCC Toolchain: Requires a C compiler (GCC) with MinGW-w64 / UCRT64 installed. I rely on MSYS2 for a smooth build environment.
+Operating System: Windows, Linux, or macOS.
 
-Compilation Command
+Python: Python 3.6 or higher (No third-party packages required).
 
-To compile the utility and link the required Windows Sockets library (-lWs2_32) execute the following command in the terminal:
+Installation & Setup
 
-gcc port_checker.c -o port_checker.exe -lWs2_32
+Clone the repository:
 
-Usage and Verification
+git clone https://github.com/your-username/tcp-port-checker.git
+cd tcp-port-checker
 
-Execute the compiled binary from a session by passing the target IP address and port number as positional arguments. I use this command to test any host:
 
-./port_checker.exe <TARGET_IP> <PORT>
+Verify Python installation:
 
-Example 1: Active Port Verification
+python --version
 
-Verify connection status against a service (e.g. Google Public DNS on TCP Port 53). I find this example useful:
 
-./port_checker.exe 8.8.8.8 53
+Usage
 
-Output:
+Run the scanner directly from your command prompt or terminal:
 
-[*] Testing TCP connection to 8.8.8.8 on port 53...
+Basic Scan (Single Port)
 
-[+] SUCCESS: Port 53 on 8.8.8.8 is OPEN!
+python port_checker.py --host 192.168.1.1 --port 80
 
-Example 2: Inactive Port Verification
 
-Verify connection status against a local port (e.g. Localhost on Port 80). I use this example to confirm ports:
+Scan Multiple Specific Ports
 
-./port_checker.exe 127.0.0.1 80
+python port_checker.py --host 192.168.1.1 --port 22,80,443,3389
 
-Output:
 
-[*] Testing TCP connection to 127.0.0.1 on port 80...
+Range Scan
 
-[-] Port 80 on 127.0.0.1 is CLOSED (or filtered).
+python port_checker.py --host 192.168.1.1 --start-port 1 --end-port 1024
 
-Technical Architecture and Implementation Details
 
-Winsock Initialization (WSAStartup): Initializes the Windows Sockets DLL (WSADATA) required for socket operations. I appreciate the initialization of C Systems Utility.
+Custom Timeout (Default: 2 seconds)
 
-Socket Instantiation (socket): Creates an AF_INET IPv4 stream socket configured for traffic (SOCK_STREAM). I trust C Systems Utility to set up sockets
+python port_checker.py --host example.com --port 443 --timeout 1.0
 
-Address Structure Configuration (sockaddr_in): Converts target IP strings and integer port values into network byte order (htons). I value the conversion, in C Systems Utility.
 
-TCP Connection Attempt (connect): Triggers the operating system kernel to initiate a three‑way TCP handshake with the target host. I see the handshake happen quickly with C Systems Utility.
+Example Output
 
-Resource Cleanup (closesocket / WSACleanup): Formally closes socket handles. Releases network resources upon completion. I am glad C Systems Utility cleans up properly.
+[*] Starting TCP Port Scan for target: 192.168.1.1
+[*] Timeout threshold set to: 2.0s
+--------------------------------------------------
+PORT     | STATUS   | SERVICE
+--------------------------------------------------
+22/tcp   | OPEN     | SSH
+80/tcp   | OPEN     | HTTP
+443/tcp  | OPEN     | HTTPS
+3389/tcp | CLOSED   | RDP
+8080/tcp | FILTERED | HTTP-ALT
+--------------------------------------------------
+[+] Scan complete. 3 open ports detected.
+
+
+Project Structure
+
+tcp-port-checker/
+│
+├── port_checker.py      # Core execution script and socket logic
+├── README.md            # Complete project documentation and manual
+└── requirements.txt     # Optional (Standard library implementation)
+
+
+Portfolio Context
+
+This project highlights core concepts in computer networking, TCP/IP protocol stack behavior, low-level socket handling, and command-line tool engineering for cybersecurity and system administration portfolios.
+
+License
+
+This project is open-source under the MIT License.
